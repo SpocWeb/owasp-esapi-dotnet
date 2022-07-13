@@ -4,11 +4,11 @@
     </asp:ObjectDataSource>
     <asp:Repeater ID="accountsRepeater" runat="server" DataSourceID="odsAccounts">
         <ItemTemplate>
-            <asp:HyperLink NavigateUrl='<%# String.Format("AccessReferenceMapPage.aspx?id={0}", DataBinder.Eval(Container.DataItem, "reference")) %>' 
+            <asp:HyperLink NavigateUrl='<%# string.Format("AccessReferenceMapPage.aspx?id={0}", DataBinder.Eval(Container.DataItem, "reference")) %>'
                            Text='<%# DataBinder.Eval(Container.DataItem, "name") %>'
-                           runat="server" ID="hlAccount" /> <br>
+                           runat="server" ID="hlAccount"/> <br>
         </ItemTemplate>
-        
-    </asp:Repeater>   
-    <asp:Label ID="lblAccountInfo" runat="server" Text=""></asp:Label>     
+
+    </asp:Repeater>
+    <asp:Label ID="lblAccountInfo" runat="server" Text=""></asp:Label>
 </asp:Content>

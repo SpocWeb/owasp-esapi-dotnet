@@ -4,7 +4,7 @@ using Owasp.Esapi.Interfaces;
 namespace Owasp.Esapi.Codecs
 {
 	/// <summary>
-	/// This class performs XML attribute encoding.
+	///     This class performs XML attribute encoding.
 	/// </summary>
 	[Codec(BuiltinCodecs.XmlAttribute)]
 	public class XmlAttributeCodec : ICodec
@@ -12,7 +12,7 @@ namespace Owasp.Esapi.Codecs
 		#region ICodec Members
 
 		/// <summary>
-		/// XML attribute encode the input.
+		///     XML attribute encode the input.
 		/// </summary>
 		/// <param name="input">The input to encode.</param>
 		/// <returns>The encoded input.</returns>
@@ -22,7 +22,7 @@ namespace Owasp.Esapi.Codecs
 		}
 
 		/// <summary>
-		/// XML attribute decode the input.
+		///     XML attribute decode the input.
 		/// </summary>
 		/// <param name="input">The input to decode.</param>
 		/// <returns>The decoded input.</returns>

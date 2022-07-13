@@ -2,30 +2,26 @@
 
 namespace Owasp.Esapi.Runtime
 {
+	/// <summary>
+	///     ESAPI condition arguments
+	/// </summary>
+	[Serializable]
+	public class ConditionArgs
+	{
+		/// <summary>
+		///     Empty condition arguments
+		/// </summary>
+		public static readonly ConditionArgs Emtpy = new ConditionArgs();
 
-    /// <summary>
-    /// ESAPI condition arguments
-    /// </summary>
-    [Serializable]
-    public class ConditionArgs
-    {
-        /// <summary>
-        /// Empty condition arguments
-        /// </summary>
-        public readonly static ConditionArgs Emtpy = new ConditionArgs();
+		RuntimeEventArgs _runtimeEventArgs;
 
-        private RuntimeEventArgs _runtimeEventArgs;
-
-        public ConditionArgs()
-        {
-        }
-        /// <summary>
-        /// Runtime event arguments
-        /// </summary>
-        public RuntimeEventArgs RuntimeArgs
-        {
-            get { return _runtimeEventArgs; }
-            internal set { _runtimeEventArgs = value; }
-        }
-    }
+		/// <summary>
+		///     Runtime event arguments
+		/// </summary>
+		public RuntimeEventArgs RuntimeArgs
+		{
+			get => _runtimeEventArgs;
+			internal set => _runtimeEventArgs = value;
+		}
+	}
 }

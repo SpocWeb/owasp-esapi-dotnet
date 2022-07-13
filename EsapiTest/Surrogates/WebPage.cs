@@ -2,7 +2,7 @@
 
 namespace EsapiTest.Surrogates
 {
-    internal class SurrogateWebPage : Page
-    {
-    }
+	internal class SurrogateWebPage : Page
+	{
+	}
 }

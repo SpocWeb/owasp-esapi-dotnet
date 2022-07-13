@@ -2,53 +2,34 @@
 
 namespace Owasp.Esapi.Runtime
 {
-    /// <summary>
-    /// Runtime context condition
-    /// </summary>
-    internal class ContextCondition : IContextCondition
-    {
-        private bool _result;
-        private ICondition _condition;
+	/// <summary>
+	///     Runtime context condition
+	/// </summary>
+	internal class ContextCondition : IContextCondition
+	{
+		public ContextCondition(ICondition condition)
+			: this(condition, true)
+		{
+		}
 
-        public ContextCondition(ICondition condition)
-            : this(condition, true)
-        {
-        }
+		/// <summary>
+		///     Initialize condition
+		/// </summary>
+		/// <param name="condition"></param>
+		/// <param name="result"></param>
+		public ContextCondition(ICondition condition, bool result)
+		{
+			if (condition == null) throw new ArgumentNullException();
+			Condition = condition;
+			Result = result;
+		}
 
-        /// <summary>
-        /// Initialize condition
-        /// </summary>
-        /// <param name="condition"></param>
-        /// <param name="result"></param>
-        public ContextCondition(ICondition condition, bool result)
-        {
-            if (condition == null) {
-                throw new ArgumentNullException();
-            }
-            _condition = condition;
-            _result = result;
-        }
+		#region IContextCondition implementation
 
-        #region IContextCondition implementation
-        public ICondition Condition
-        {
-            get
-            {
-                return _condition;
-            }
-        }
+		public ICondition Condition { get; }
 
-        public bool Result
-        {
-            get
-            {
-                return _result;
-            }
-            set
-            {
-                _result = value;
-            }
-        }
-        #endregion
-    }
+		public bool Result { get; set; }
+
+		#endregion
+	}
 }

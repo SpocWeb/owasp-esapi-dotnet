@@ -3,77 +3,80 @@ using Owasp.Esapi.Interfaces;
 
 namespace EsapiTest.Surrogates
 {
-    // Forward encoder
-    internal class SurrogateEncoder : IEncoder
-    {
-        internal static IEncoder DefaultEncoder;
-        private IEncoder _instanceImpl;
+	// Forward encoder
+	internal class SurrogateEncoder : IEncoder
+	{
+		internal static IEncoder DefaultEncoder;
+		IEncoder _instanceImpl;
 
-        public IEncoder Impl
-        {
-            get { return _instanceImpl != null ? _instanceImpl : DefaultEncoder; }
-            set { _instanceImpl = value; }
-        }
-        #region IEncoder Members
+		public IEncoder Impl
+		{
+			get => _instanceImpl != null ? _instanceImpl : DefaultEncoder;
+			set => _instanceImpl = value;
+		}
 
-        public string Canonicalize(string input, bool strict)
-        {
-            return Impl.Canonicalize(input, strict);
-        }
+		#region IEncoder Members
 
-        public string Canonicalize(IEnumerable<string> codecNames, string input, bool strict)
-        {
-            return Impl.Canonicalize(codecNames, input, strict);
-        }
+		public string Canonicalize(string input, bool strict)
+		{
+			return Impl.Canonicalize(input, strict);
+		}
 
-        public string Normalize(string input)
-        {
-            return Impl.Normalize(input);
-        }
+		public string Canonicalize(IEnumerable<string> codecNames, string input, bool strict)
+		{
+			return Impl.Canonicalize(codecNames, input, strict);
+		}
 
-        public string Encode(string codecName, string input)
-        {
-            return Impl.Encode(codecName, input);
-        }
+		public string Normalize(string input)
+		{
+			return Impl.Normalize(input);
+		}
 
-        public string Decode(string codecName, string input)
-        {
-            return Impl.Decode(codecName, input);
-        }
+		public string Encode(string codecName, string input)
+		{
+			return Impl.Encode(codecName, input);
+		}
 
-        public ICodec GetCodec(string codecName)
-        {
-            return Impl.GetCodec(codecName);
-        }
+		public string Decode(string codecName, string input)
+		{
+			return Impl.Decode(codecName, input);
+		}
 
-        public void AddCodec(string codecName, ICodec codec)
-        {
-            Impl.AddCodec(codecName, codec);
-        }
+		public ICodec GetCodec(string codecName)
+		{
+			return Impl.GetCodec(codecName);
+		}
 
-        public void RemoveCodec(string codecName)
-        {
-            Impl.RemoveCodec(codecName);
-        }
+		public void AddCodec(string codecName, ICodec codec)
+		{
+			Impl.AddCodec(codecName, codec);
+		}
 
-        #endregion
-    }
-    // Forward codec
-    internal class SurrogateCodec : ICodec
-    {
-        public ICodec Impl { get; set; }
-        #region ICodec Members
+		public void RemoveCodec(string codecName)
+		{
+			Impl.RemoveCodec(codecName);
+		}
 
-        public string Encode(string input)
-        {
-            return Impl.Encode(input);
-        }
+		#endregion
+	}
 
-        public string Decode(string input)
-        {
-            return Impl.Decode(input);
-        }
+	// Forward codec
+	internal class SurrogateCodec : ICodec
+	{
+		public ICodec Impl { get; set; }
 
-        #endregion
-    }
+		#region ICodec Members
+
+		public string Encode(string input)
+		{
+			return Impl.Encode(input);
+		}
+
+		public string Decode(string input)
+		{
+			return Impl.Decode(input);
+		}
+
+		#endregion
+	}
 }

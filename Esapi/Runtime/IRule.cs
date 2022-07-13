@@ -1,10 +1,9 @@
-﻿
-namespace Owasp.Esapi.Runtime
+﻿namespace Owasp.Esapi.Runtime
 {
-    /// <summary>
-    /// Rule base interface
-    /// </summary>
-    public interface IRule : IRuntimeEventListener
-    {        
-    }
+	/// <summary>
+	///     Rule base interface
+	/// </summary>
+	public interface IRule : IRuntimeEventListener
+	{
+	}
 }

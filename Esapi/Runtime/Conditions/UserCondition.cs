@@ -1,112 +1,99 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Security.Principal;
 using System.Text.RegularExpressions;
-using Owasp.Esapi.Interfaces;
-using Owasp.Esapi.Runtime;
 
 namespace Owasp.Esapi.Runtime.Conditions
 {
-    /// <summary>
-    /// User test condition
-    /// </summary>
-    public class UserCondition : ICondition
-    {
-        /// <summary>
-        /// Any user name pattern
-        /// </summary>
-        public const string AnyNamePattern = "*";
+	/// <summary>
+	///     User test condition
+	/// </summary>
+	public class UserCondition : ICondition
+	{
+		/// <summary>
+		///     Any user name pattern
+		/// </summary>
+		public const string AnyNamePattern = "*";
 
-        private Regex           _userName;
-        private List<string>    _roles;
+		List<string> _roles;
 
-        /// <summary>
-        /// Initialize user test condition
-        /// </summary>
-        /// <param name="namePattern">User name pattern</param>
-        public UserCondition(string namePattern)
-            : this(namePattern, null)
-        {            
-        }
+		Regex _userName;
 
-        /// <summary>
-        /// Initialize user test condition
-        /// </summary>
-        /// <param name="namePattern">User name pattern</param>
-        /// <param name="roles">User roles</param>
-        public UserCondition(string namePattern, IEnumerable<string> roles)
-        {
-            NamePattern = namePattern;
-            Roles = roles;
-        }
+		/// <summary>
+		///     Initialize user test condition
+		/// </summary>
+		/// <param name="namePattern">User name pattern</param>
+		public UserCondition(string namePattern)
+			: this(namePattern, null)
+		{
+		}
 
-        /// <summary>
-        /// Name pattern
-        /// </summary>
-        public string NamePattern
-        {
-            get { return _userName.ToString(); }
-            set
-            {
-                if (string.IsNullOrEmpty(value)) {
-                    _userName = new Regex("^$");
-                }
-                else {
-                    _userName = new Regex(value);
-                }
-            }
-        }
+		/// <summary>
+		///     Initialize user test condition
+		/// </summary>
+		/// <param name="namePattern">User name pattern</param>
+		/// <param name="roles">User roles</param>
+		public UserCondition(string namePattern, IEnumerable<string> roles)
+		{
+			NamePattern = namePattern;
+			Roles = roles;
+		}
 
-        /// <summary>
-        /// User roles
-        /// </summary>
-        public IEnumerable<string> Roles
-        {
-            get { return _roles; }
-            set { _roles = (value == null ? new List<string>() : new List<string>(value)); }
-        }
+		/// <summary>
+		///     Name pattern
+		/// </summary>
+		public string NamePattern
+		{
+			get => _userName.ToString();
+			set
+			{
+				if (string.IsNullOrEmpty(value))
+					_userName = new Regex("^$");
+				else
+					_userName = new Regex(value);
+			}
+		}
 
-        #region ICondition Members
-        /// <summary>
-        /// Test if the current user identity and roles matches
-        /// </summary>
-        /// <returns></returns>
-        public bool Evaluate(ConditionArgs args)
-        {
-            if (args == null) {
-                throw new ArgumentNullException("args");
-            }
+		/// <summary>
+		///     User roles
+		/// </summary>
+		public IEnumerable<string> Roles
+		{
+			get => _roles;
+			set => _roles = value == null ? new List<string>() : new List<string>(value);
+		}
 
-            // Get user identity 
-            IPrincipal userPrincipal = Esapi.SecurityConfiguration.CurrentUser;
-            IIdentity userIdentity = (userPrincipal != null ? userPrincipal.Identity : null);
-            
-            if (userIdentity == null) {
-                return false;
-            }
+		#region ICondition Members
 
-            // Get user name
-            string userName = userIdentity.Name;
-            if (string.IsNullOrEmpty(userName)) {
-                return false;
-            }
+		/// <summary>
+		///     Test if the current user identity and roles matches
+		/// </summary>
+		/// <returns></returns>
+		public bool Evaluate(ConditionArgs args)
+		{
+			if (args == null) throw new ArgumentNullException("args");
 
-            // Match user name
-            if (!_userName.IsMatch(userName)) {
-                return false;
-            }
+			// Get user identity 
+			var userPrincipal = Esapi.SecurityConfiguration.CurrentUser;
+			var userIdentity = userPrincipal != null ? userPrincipal.Identity : null;
 
-            // Match roles
-            foreach (string role in _roles) {
-                if (!userPrincipal.IsInRole(role)) {
-                    return false;
-                }
-            }
+			if (userIdentity == null) return false;
 
-            // Roles match
-            return true;
-        }
+			// Get user name
+			var userName = userIdentity.Name;
+			if (string.IsNullOrEmpty(userName)) return false;
 
-        #endregion
-    }
+			// Match user name
+			if (!_userName.IsMatch(userName)) return false;
+
+			// Match roles
+			foreach (var role in _roles)
+				if (!userPrincipal.IsInRole(role))
+					return false;
+
+			// Roles match
+			return true;
+		}
+
+		#endregion
+	}
 }

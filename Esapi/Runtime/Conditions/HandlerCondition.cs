@@ -1,67 +1,54 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Web;
 
 namespace Owasp.Esapi.Runtime.Conditions
 {
-    /// <summary>
-    /// Handler match condition
-    /// </summary>
-    public class HandlerCondition : ICondition
-    {
-        private Type _handlerType;
+	/// <summary>
+	///     Handler match condition
+	/// </summary>
+	public class HandlerCondition : ICondition
+	{
+		/// <summary>
+		///     Initialize handler condition
+		/// </summary>
+		public HandlerCondition()
+		{
+			HandlerType = null;
+		}
 
-        /// <summary>
-        /// Initialize handler condition
-        /// </summary>
-        public HandlerCondition()
-        {
-            _handlerType = null;
-        }
-        /// <summary>
-        /// Initialize handler condition
-        /// </summary>
-        /// <param name="handlerType">Handler type to match</param>
-        public HandlerCondition(Type handlerType)
-        {
-            if (handlerType == null) {
-                throw new ArgumentNullException();
-            }
-            _handlerType = handlerType;
-        }
+		/// <summary>
+		///     Initialize handler condition
+		/// </summary>
+		/// <param name="handlerType">Handler type to match</param>
+		public HandlerCondition(Type handlerType)
+		{
+			if (handlerType == null) throw new ArgumentNullException();
+			HandlerType = handlerType;
+		}
 
-        /// <summary>
-        /// Handler type to match
-        /// </summary>
-        public Type HandlerType
-        {
-            get { return _handlerType; }
-            set { _handlerType = value; }
-        }
+		/// <summary>
+		///     Handler type to match
+		/// </summary>
+		public Type HandlerType { get; set; }
 
-        #region ICondition Members
-        /// <summary>
-        /// Evaluate handler condition
-        /// </summary>
-        /// <param name="args"></param>
-        /// <returns></returns>
-        public bool Evaluate(ConditionArgs args)
-        {
-            bool isMatch = false;
+		#region ICondition Members
 
-            IHttpHandler handler = (HttpContext.Current != null ?
-                                        HttpContext.Current.CurrentHandler :
-                                        null);
+		/// <summary>
+		///     Evaluate handler condition
+		/// </summary>
+		/// <param name="args"></param>
+		/// <returns></returns>
+		public bool Evaluate(ConditionArgs args)
+		{
+			var isMatch = false;
 
-            if (handler != null && _handlerType != null) {
-                isMatch = handler.GetType().Equals(_handlerType);
-            }
+			var handler = HttpContext.Current != null ? HttpContext.Current.CurrentHandler : null;
 
-            return isMatch;
-        }
+			if (handler != null && HandlerType != null) isMatch = handler.GetType().Equals(HandlerType);
 
-        #endregion
-    }
+			return isMatch;
+		}
+
+		#endregion
+	}
 }

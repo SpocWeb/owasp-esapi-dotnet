@@ -1,53 +1,51 @@
-﻿using Owasp.Esapi.Interfaces;
+﻿using System.Collections.Generic;
 using System.Web;
-using System.Collections.Generic;
-using System.Security.Principal;
-using System.Threading;
+using Owasp.Esapi.Interfaces;
 
 namespace EsapiTest.Surrogates
 {
-    // Forward http utilities
-    internal class SurrogateHttpUtilities : IHttpUtilities
-    {
-        public IHttpUtilities Impl { get; set; }
+	// Forward http utilities
+	internal class SurrogateHttpUtilities : IHttpUtilities
+	{
+		public IHttpUtilities Impl { get; set; }
 
-        #region IHttpUtilities Members
+		#region IHttpUtilities Members
 
-        public void AddCsrfToken()
-        {
-            Impl.AddCsrfToken();
-        }
+		public void AddCsrfToken()
+		{
+			Impl.AddCsrfToken();
+		}
 
-        public string AddCsrfToken(string href)
-        {
-            return Impl.AddCsrfToken(href);
-        }
+		public string AddCsrfToken(string href)
+		{
+			return Impl.AddCsrfToken(href);
+		}
 
-        public void VerifyCsrfToken()
-        {
-            Impl.VerifyCsrfToken();
-        }
+		public void VerifyCsrfToken()
+		{
+			Impl.VerifyCsrfToken();
+		}
 
-        public void AddNoCacheHeaders()
-        {
-            Impl.AddNoCacheHeaders();
-        }
+		public void AddNoCacheHeaders()
+		{
+			Impl.AddNoCacheHeaders();
+		}
 
-        public void ChangeSessionIdentifier()
-        {
-            Impl.ChangeSessionIdentifier();
-        }
+		public void ChangeSessionIdentifier()
+		{
+			Impl.ChangeSessionIdentifier();
+		}
 
-        public void LogHttpRequest(HttpRequest request, ILogger logger, ICollection<string> obfuscatedParams)
-        {
-            Impl.LogHttpRequest(request, logger, obfuscatedParams);
-        }
+		public void LogHttpRequest(HttpRequest request, ILogger logger, ICollection<string> obfuscatedParams)
+		{
+			Impl.LogHttpRequest(request, logger, obfuscatedParams);
+		}
 
-        public void AssertSecureRequest(HttpRequest request)
-        {
-            Impl.AssertSecureRequest(request);
-        }
+		public void AssertSecureRequest(HttpRequest request)
+		{
+			Impl.AssertSecureRequest(request);
+		}
 
-        #endregion
-    }
+		#endregion
+	}
 }

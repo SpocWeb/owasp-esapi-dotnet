@@ -4,7 +4,7 @@ using Owasp.Esapi.Interfaces;
 namespace Owasp.Esapi.Codecs
 {
 	/// <summary>
-	/// This class performs URL encoding.
+	///     This class performs URL encoding.
 	/// </summary>
 	[Codec(BuiltinCodecs.Url)]
 	public class UrlCodec : ICodec
@@ -12,23 +12,23 @@ namespace Owasp.Esapi.Codecs
 		#region ICodec Members
 
 		/// <summary>
-		/// URL encode the input.
+		///     URL encode the input.
 		/// </summary>
 		/// <param name="input">The input to encode.</param>
 		/// <returns>The encoded input.</returns>
 		public string Encode(string input)
 		{
-			return Microsoft.Security.Application.Encoder.UrlEncode(input);  
+			return Microsoft.Security.Application.Encoder.UrlEncode(input);
 		}
 
 		/// <summary>
-		/// URL decode the input.
+		///     URL decode the input.
 		/// </summary>
 		/// <param name="input">The input to decode.</param>
 		/// <returns>The decoded input.</returns>
 		public string Decode(string input)
 		{
-			return HttpUtility.UrlDecode(input); 
+			return HttpUtility.UrlDecode(input);
 		}
 
 		#endregion

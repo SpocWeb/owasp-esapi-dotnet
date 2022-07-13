@@ -4,8 +4,8 @@ using Owasp.Esapi.Interfaces;
 namespace Owasp.Esapi.Codecs
 {
 	/// <summary>
-	/// This class performs VBScript encoding. This is useful for encoding values that will be displayed in a browser
-	/// as JavaScript  (i.e. &lt;script type="VbScript" &gt; "untrusted data here" &lt;/script&gt;)
+	///     This class performs VBScript encoding. This is useful for encoding values that will be displayed in a browser
+	///     as JavaScript  (i.e. &lt;script type="VbScript" &gt; "untrusted data here" &lt;/script&gt;)
 	/// </summary>
 	[Codec(BuiltinCodecs.VbScript)]
 	public class VbScriptCodec : ICodec
@@ -13,7 +13,7 @@ namespace Owasp.Esapi.Codecs
 		#region ICodec Members
 
 		/// <summary>
-		/// VBScript encode the input.
+		///     VBScript encode the input.
 		/// </summary>
 		/// <param name="input">The input to encode.</param>
 		/// <returns>The encoded input.</returns>
@@ -23,7 +23,7 @@ namespace Owasp.Esapi.Codecs
 		}
 
 		/// <summary>
-		/// VbScript decode the input.
+		///     VbScript decode the input.
 		/// </summary>
 		/// <param name="input">The input to decode.</param>
 		/// <returns>The decoded input.</returns>

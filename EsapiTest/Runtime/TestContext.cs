@@ -1,166 +1,161 @@
 ﻿using System;
-using System.Text;
-using System.Collections.Generic;
-using System.Linq;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Rhino.Mocks;
+using NUnit.Framework;
 using Owasp.Esapi.Runtime;
-using Owasp.Esapi.Interfaces;
+using Rhino.Mocks;
 
 namespace EsapiTest.Runtime
 {
-    delegate void RuntimeSubscribe(IRuntimeEventPublisher pub);
+	internal delegate void RuntimeSubscribe(IRuntimeEventPublisher pub);
 
-    internal class RuntimeEventSource : IRuntimeEventPublisher
-    {
-        #region IRuntimeEventPublisher Members
-        public event EventHandler<RuntimeEventArgs> PreRequestHandlerExecute;
-        public event EventHandler<RuntimeEventArgs> PostRequestHandlerExecute;
-        #endregion
+	internal class RuntimeEventSource : IRuntimeEventPublisher
+	{
+		public void FirePreRequestHandlerExecute()
+		{
+			if (PreRequestHandlerExecute != null) PreRequestHandlerExecute(this, new RuntimeEventArgs());
+		}
 
-        public void FirePreRequestHandlerExecute()
-        {
-            if (PreRequestHandlerExecute != null) {
-                PreRequestHandlerExecute(this, new RuntimeEventArgs());
-            }
-        }
-        public void FirePostRequestHandlerExecute()
-        {
-            if (PostRequestHandlerExecute != null) {
-                PostRequestHandlerExecute(this, new RuntimeEventArgs());
-            }
-        }
-    }
+		public void FirePostRequestHandlerExecute()
+		{
+			if (PostRequestHandlerExecute != null) PostRequestHandlerExecute(this, new RuntimeEventArgs());
+		}
 
-    /// <summary>
-    /// Summary description for TestContext
-    /// </summary>
-    [TestClass]
-    public class TestContext
-    {
-        private MockRepository _mocks;
-        private EsapiRuntime _runtime;
+		#region IRuntimeEventPublisher Members
 
-        private readonly string CID = Guid.NewGuid().ToString();
-        private readonly string AID = Guid.NewGuid().ToString();
-        private readonly string RID = Guid.NewGuid().ToString();
+		public event EventHandler<RuntimeEventArgs> PreRequestHandlerExecute;
+		public event EventHandler<RuntimeEventArgs> PostRequestHandlerExecute;
 
-        [TestInitialize]
-        public void Initialize()
-        {
-            _mocks = new MockRepository();
-            _runtime = new EsapiRuntime();
-            
-            InitializeRuntime();
-        }
+		#endregion
+	}
 
-        [TestCleanup]
-        public void TearDown()
-        {
-        }
+	/// <summary>
+	///     Summary description for TestContext
+	/// </summary>
+	public class TestContext
+	{
+		readonly string AID = Guid.NewGuid().ToString();
 
-        public void InitializeRuntime()
-        {
-            Assert.IsNotNull(_runtime);
+		readonly string CID = Guid.NewGuid().ToString();
+		readonly string RID = Guid.NewGuid().ToString();
+		MockRepository _mocks;
+		EsapiRuntime _runtime;
 
-            _runtime.Conditions.Register(CID, _mocks.StrictMock<ICondition>());
-            _runtime.Actions.Register(AID, _mocks.StrictMock<IAction>());
-            _runtime.Rules.Register(RID, _mocks.StrictMock<IRule>());
-        }
+		[Test]
+		public void Initialize()
+		{
+			_mocks = new MockRepository();
+			_runtime = new EsapiRuntime();
 
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
-        public void TestAddDuplicateContext()
-        {
-            string contextId = Guid.NewGuid().ToString();
+			InitializeRuntime();
+		}
 
-            Assert.IsNotNull(_runtime);
+		[TearDown]
+		public void TearDown()
+		{
+		}
 
-            _runtime.CreateContext(contextId);
-            _runtime.CreateContext(contextId);
-        }
+		public void InitializeRuntime()
+		{
+			Assert.IsNotNull(_runtime);
 
-        [TestMethod]
-        public void TestContextFailInit()
-        {
-            try {
-                new Context(null);
-                Assert.Fail("Null id");
-            }
-            catch (ArgumentException) {
-            }
+			_runtime.Conditions.Register(CID, _mocks.StrictMock<ICondition>());
+			_runtime.Actions.Register(AID, _mocks.StrictMock<IAction>());
+			_runtime.Rules.Register(RID, _mocks.StrictMock<IRule>());
+		}
 
-            try {
-                new Context(string.Empty);
-                Assert.Fail("Empty id");
-            }
-            catch (ArgumentException) {
-            }
-        }
+		[Test]
+		public void TestAddDuplicateContext()
+		{
+			var contextId = Guid.NewGuid().ToString();
 
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
-        public void TestAddDuplicateSubContext()
-        {
-            string contextId = Guid.NewGuid().ToString();
-            string subcontextId = Guid.NewGuid().ToString();
+			Assert.IsNotNull(_runtime);
 
-            Assert.IsNotNull(_runtime);
+			_runtime.CreateContext(contextId);
+			Assert.Throws<ArgumentException>(() =>
+				_runtime.CreateContext(contextId));
+		}
 
-            IContext parent = _runtime.CreateContext(contextId);
-            parent.CreateSubContext(subcontextId);
-            parent.CreateSubContext(subcontextId);
-        }
+		[Test]
+		public void TestContextFailInit()
+		{
+			try
+			{
+				new Context(null);
+				Assert.Fail("Null id");
+			}
+			catch (ArgumentException)
+			{
+			}
 
-        [TestMethod]
-        public void TestContextMatchTrueCondition()
-        {
-            Assert.IsNotNull(_runtime);
+			try
+			{
+				new Context(string.Empty);
+				Assert.Fail("Empty id");
+			}
+			catch (ArgumentException)
+			{
+			}
+		}
 
-            string contextId = Guid.NewGuid().ToString();
-            string eventId = Guid.NewGuid().ToString();
+		[Test]
+		public void TestAddDuplicateSubContext()
+		{
+			var contextId = Guid.NewGuid().ToString();
+			var subcontextId = Guid.NewGuid().ToString();
 
-            // Setup conditions
-            IContext context = _runtime.CreateContext(contextId);
-            context.BindCondition(_runtime.Conditions.Get(CID), true);
-            Assert.AreEqual(context.MatchConditions.Count, 1);
+			Assert.IsNotNull(_runtime);
 
-            // Setup rule
-            IRule rule = _runtime.Rules.Get(RID);
-            Expect.Call(delegate { rule.Subscribe(null); }).IgnoreArguments()
-                .Do((RuntimeSubscribe)
-                // Register to throw exceptions for each published event
-                delegate(IRuntimeEventPublisher pub) {
-                    pub.PreRequestHandlerExecute += delegate(object sender, RuntimeEventArgs args) {
-                        throw new InvalidOperationException();
-                    };
-                    pub.PostRequestHandlerExecute += delegate(object sender, RuntimeEventArgs args) {
-                        throw new AccessViolationException();
-                    };
-                });
-                   
-            // Set expectations for prerequest
-            Expect.Call( _runtime.Conditions.Get(CID).Evaluate(null))
-                .IgnoreArguments().Return(true);
-            Expect.Call(delegate { _runtime.Actions.Get(AID).Execute(null); }).IgnoreArguments();
-            // Set expectations for postrequest
-            Expect.Call(_runtime.Conditions.Get(CID).Evaluate(null))
-                .IgnoreArguments().Return(true);
-            Expect.Call(delegate { _runtime.Actions.Get(AID).Execute(null); }).IgnoreArguments();
-            _mocks.ReplayAll();
+			var parent = _runtime.CreateContext(contextId);
+			parent.CreateSubContext(subcontextId);
+			Assert.Throws<ArgumentNullException>(() =>
+				parent.CreateSubContext(subcontextId));
+		}
+
+		[Test]
+		public void TestContextMatchTrueCondition()
+		{
+			Assert.IsNotNull(_runtime);
+
+			var contextId = Guid.NewGuid().ToString();
+			var eventId = Guid.NewGuid().ToString();
+
+			// Setup conditions
+			var context = _runtime.CreateContext(contextId);
+			context.BindCondition(_runtime.Conditions.Get(CID), true);
+			Assert.AreEqual(context.MatchConditions.Count, 1);
+
+			// Setup rule
+			var rule = _runtime.Rules.Get(RID);
+			Expect.Call(delegate { rule.Subscribe(null); }).IgnoreArguments()
+				.Do((RuntimeSubscribe)
+					// Register to throw exceptions for each published event
+					delegate(IRuntimeEventPublisher pub)
+					{
+						pub.PreRequestHandlerExecute += delegate { throw new InvalidOperationException(); };
+						pub.PostRequestHandlerExecute += delegate { throw new AccessViolationException(); };
+					});
+
+			// Set expectations for prerequest
+			Expect.Call(_runtime.Conditions.Get(CID).Evaluate(null))
+				.IgnoreArguments().Return(true);
+			Expect.Call(delegate { _runtime.Actions.Get(AID).Execute(null); }).IgnoreArguments();
+			// Set expectations for postrequest
+			Expect.Call(_runtime.Conditions.Get(CID).Evaluate(null))
+				.IgnoreArguments().Return(true);
+			Expect.Call(delegate { _runtime.Actions.Get(AID).Execute(null); }).IgnoreArguments();
+			_mocks.ReplayAll();
 
 
-            // Verify            
-            context.BindRule(rule).FaultActions.Add(_runtime.Actions.Get(AID));
-            Assert.AreEqual(context.ExecuteRules.Count, 1);
-            
-            // Verify event handlers
-            RuntimeEventSource source = new RuntimeEventSource();
-            _runtime.Subscribe(source);
-            source.FirePreRequestHandlerExecute();
-            source.FirePostRequestHandlerExecute();
+			// Verify            
+			context.BindRule(rule).FaultActions.Add(_runtime.Actions.Get(AID));
+			Assert.AreEqual(context.ExecuteRules.Count, 1);
 
-            _mocks.VerifyAll();            
-        }
-    }
+			// Verify event handlers
+			var source = new RuntimeEventSource();
+			_runtime.Subscribe(source);
+			source.FirePreRequestHandlerExecute();
+			source.FirePostRequestHandlerExecute();
+
+			_mocks.VerifyAll();
+		}
+	}
 }

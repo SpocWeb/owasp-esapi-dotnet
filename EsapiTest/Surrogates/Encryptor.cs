@@ -2,59 +2,57 @@
 
 namespace EsapiTest.Surrogates
 {
-    /// <summary>
-    /// Forward encryptor for mocking
-    /// </summary>
-    internal class SurrogateEncryptor : IEncryptor
-    {
-        public IEncryptor Impl { get; set; }
-        #region IEncryptor Members
+	/// <summary>
+	///     Forward encryptor for mocking
+	/// </summary>
+	internal class SurrogateEncryptor : IEncryptor
+	{
+		public IEncryptor Impl { get; set; }
 
-        public long TimeStamp
-        {
-            get { return Impl.TimeStamp; }
-        }
+		#region IEncryptor Members
 
-        public string Hash(string plaintext, string salt)
-        {
-            return Impl.Hash(plaintext, salt);
-        }
+		public long TimeStamp => Impl.TimeStamp;
 
-        public string Encrypt(string plaintext)
-        {
-            return Impl.Encrypt(plaintext);
-        }
+		public string Hash(string plaintext, string salt)
+		{
+			return Impl.Hash(plaintext, salt);
+		}
 
-        public string Decrypt(string ciphertext)
-        {
-            return Impl.Decrypt(ciphertext);
-        }
+		public string Encrypt(string plaintext)
+		{
+			return Impl.Encrypt(plaintext);
+		}
 
-        public string Sign(string data)
-        {
-            return Impl.Sign(data);
-        }
+		public string Decrypt(string ciphertext)
+		{
+			return Impl.Decrypt(ciphertext);
+		}
 
-        public bool VerifySignature(string signature, string data)
-        {
-            return Impl.VerifySignature(signature, data);
-        }
+		public string Sign(string data)
+		{
+			return Impl.Sign(data);
+		}
 
-        public string Seal(string data, long timestamp)
-        {
-            return Impl.Seal(data, timestamp);
-        }
+		public bool VerifySignature(string signature, string data)
+		{
+			return Impl.VerifySignature(signature, data);
+		}
 
-        public string Unseal(string seal)
-        {
-            return Impl.Unseal(seal);
-        }
+		public string Seal(string data, long timestamp)
+		{
+			return Impl.Seal(data, timestamp);
+		}
 
-        public bool VerifySeal(string seal)
-        {
-            return Impl.VerifySeal(seal);
-        }
+		public string Unseal(string seal)
+		{
+			return Impl.Unseal(seal);
+		}
 
-        #endregion
-    }
+		public bool VerifySeal(string seal)
+		{
+			return Impl.VerifySeal(seal);
+		}
+
+		#endregion
+	}
 }

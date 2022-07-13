@@ -1,155 +1,151 @@
 ﻿using System;
 using EsapiTest.Surrogates;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 using Owasp.Esapi;
 using Owasp.Esapi.Configuration;
 using Owasp.Esapi.Errors;
-using Owasp.Esapi.Interfaces;
-using Owasp.Esapi.Runtime;
 using Owasp.Esapi.Runtime.Actions;
-using Rhino.Mocks;
 
 namespace EsapiTest.InstrusionDetector
 {
-    /// <summary>
-    /// Summary description for IntrusionDetector
-    /// </summary>
-    [TestClass]
-    public class IntrusionDetectorTest
-    {
-        [TestInitialize]
-        public void InitializeTests()
-        {
-            Esapi.Reset();
-            EsapiConfig.Reset();
-        }
-                
-        [TestMethod]
-        public void Test_AddException()
-        {
-            Esapi.IntrusionDetector.AddException(new IntrusionException("user message", "log message"));
-        }
+	/// <summary>
+	///     Summary description for IntrusionDetector
+	/// </summary>
+	public class IntrusionDetectorTest
+	{
+		[Test]
+		public void InitializeTests()
+		{
+			Esapi.Reset();
+			EsapiConfig.Reset();
+		}
 
-        [TestMethod]
-        public void Test_AddESAPIException()
-        {
-            EnterpriseSecurityException secExp = new EnterpriseSecurityException();
-            Esapi.IntrusionDetector.AddException(secExp);
-        }
+		[Test]
+		public void Test_AddException()
+		{
+			Esapi.IntrusionDetector.AddException(new IntrusionException("user message", "log message"));
+		}
 
-        [TestMethod]
-        public void Test_AddExceptionSecurityEvent()
-        {
-            string evtName = typeof(ArgumentException).FullName;
+		[Test]
+		public void Test_AddESAPIException()
+		{
+			var secExp = new EnterpriseSecurityException();
+			Esapi.IntrusionDetector.AddException(secExp);
+		}
 
-            IntrusionDetector detector = Esapi.IntrusionDetector as IntrusionDetector;
-            Assert.IsNotNull(detector);
+		[Test]
+		public void Test_AddExceptionSecurityEvent()
+		{
+			var evtName = typeof(ArgumentException).FullName;
 
-            Threshold threshold = new Threshold(evtName, 1, 1, new[] { "log" });
-            detector.AddThreshold(threshold);
+			var detector = Esapi.IntrusionDetector as IntrusionDetector;
+			Assert.IsNotNull(detector);
 
-            ArgumentException arg = new ArgumentException();
-            detector.AddException(arg);
-        }
+			var threshold = new Threshold(evtName, 1, 1, new[] {"log"});
+			detector.AddThreshold(threshold);
 
-        [TestMethod]
-        public void Test_AddEvent()
-        {
-            string evtName = Guid.NewGuid().ToString();
+			var arg = new ArgumentException();
+			detector.AddException(arg);
+		}
 
-            Esapi.IntrusionDetector.AddEvent(evtName);
-        }
+		[Test]
+		public void Test_AddEvent()
+		{
+			var evtName = Guid.NewGuid().ToString();
 
-        [TestMethod]
-        public void Test_AddThreshold()
-        {
-            string evtName = Guid.NewGuid().ToString();
+			Esapi.IntrusionDetector.AddEvent(evtName);
+		}
 
-            IntrusionDetector detector = Esapi.IntrusionDetector as IntrusionDetector;
-            Assert.IsNotNull(detector);
+		[Test]
+		public void Test_AddThreshold()
+		{
+			var evtName = Guid.NewGuid().ToString();
 
-            Threshold threshold = new Threshold(evtName, 1, 1, new[] { "logout" });
-            detector.AddThreshold(threshold);
-        }
+			var detector = Esapi.IntrusionDetector as IntrusionDetector;
+			Assert.IsNotNull(detector);
 
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
-        public void Test_AddThresholdMissingAction()
-        {
-            string evtName = Guid.NewGuid().ToString();
+			var threshold = new Threshold(evtName, 1, 1, new[] {"logout"});
+			detector.AddThreshold(threshold);
+		}
 
-            IntrusionDetector detector = Esapi.IntrusionDetector as IntrusionDetector;
-            Assert.IsNotNull(detector);
+		[Test]
+		public void Test_AddThresholdMissingAction()
+		{
+			var evtName = Guid.NewGuid().ToString();
 
-            Threshold threshold = new Threshold(evtName, 1, 1, new[] { Guid.NewGuid().ToString() });
-            detector.AddThreshold(threshold);
-        }
+			var detector = Esapi.IntrusionDetector as IntrusionDetector;
+			Assert.IsNotNull(detector);
 
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException))]
-        public void Test_AddNullThreshold()
-        {
-            IntrusionDetector detector = Esapi.IntrusionDetector as IntrusionDetector;
-            Assert.IsNotNull(detector);
+			var threshold = new Threshold(evtName, 1, 1, new[] {Guid.NewGuid().ToString()});
+			Assert.Throws<ArgumentNullException>(() =>
+				detector.AddThreshold(threshold));
+		}
 
-            detector.AddThreshold(null);
-        }
+		[Test]
+		public void Test_AddNullThreshold()
+		{
+			var detector = Esapi.IntrusionDetector as IntrusionDetector;
+			Assert.IsNotNull(detector);
 
-        [TestMethod]
-        [ExpectedException(typeof(ArgumentException))]
-        public void Test_AddDuplicateThreshold()
-        {
-            string evtName = Guid.NewGuid().ToString();
+			Assert.Throws<ArgumentNullException>(() =>
+				detector.AddThreshold(null));
+		}
 
-            IntrusionDetector detector = Esapi.IntrusionDetector as IntrusionDetector;
-            Assert.IsNotNull(detector);
+		[Test]
+		public void Test_AddDuplicateThreshold()
+		{
+			var evtName = Guid.NewGuid().ToString();
 
-            Threshold threshold = new Threshold(evtName, 1, 1, new[] { BuiltinActions.FormsAuthenticationLogout });
-            detector.AddThreshold(threshold);
+			var detector = Esapi.IntrusionDetector as IntrusionDetector;
+			Assert.IsNotNull(detector);
 
-            Threshold dup = new Threshold(evtName, 2, 2, null);
-            detector.AddThreshold(dup);
-        }
+			var threshold = new Threshold(evtName, 1, 1, new[] {BuiltinActions.FormsAuthenticationLogout});
+			detector.AddThreshold(threshold);
 
-        [TestMethod]
-        public void Test_RemoveThreshold()
-        {
-            string evtName = Guid.NewGuid().ToString();
+			var dup = new Threshold(evtName, 2, 2, null);
+			Assert.Throws<ArgumentException>(() =>
+				detector.AddThreshold(dup));
+		}
 
-            IntrusionDetector detector = Esapi.IntrusionDetector as IntrusionDetector;
-            Assert.IsNotNull(detector);
+		[Test]
+		public void Test_RemoveThreshold()
+		{
+			var evtName = Guid.NewGuid().ToString();
 
-            Threshold threshold = new Threshold(evtName, 1, 1, new[] { "logout" });
-            detector.AddThreshold(threshold);
+			var detector = Esapi.IntrusionDetector as IntrusionDetector;
+			Assert.IsNotNull(detector);
 
-            Assert.IsTrue( detector.RemoveThreshold(evtName));
-        }
+			var threshold = new Threshold(evtName, 1, 1, new[] {"logout"});
+			detector.AddThreshold(threshold);
 
-        [TestMethod]
-        public void Test_IntrusionDetected()
-        {
-            string evtName = Guid.NewGuid().ToString();
+			Assert.IsTrue(detector.RemoveThreshold(evtName));
+		}
 
-            IntrusionDetector detector = Esapi.IntrusionDetector as IntrusionDetector;
-            Assert.IsNotNull(detector);
+		[Test]
+		public void Test_IntrusionDetected()
+		{
+			var evtName = Guid.NewGuid().ToString();
 
-            Threshold threshold = new Threshold(evtName, 1, 1, new[] { "log"});
-            detector.AddThreshold(threshold);
+			var detector = Esapi.IntrusionDetector as IntrusionDetector;
+			Assert.IsNotNull(detector);
 
-            Esapi.IntrusionDetector.AddEvent(evtName);
-        }
+			var threshold = new Threshold(evtName, 1, 1, new[] {"log"});
+			detector.AddThreshold(threshold);
 
-        /// <summary>
-        /// Test loading of a custom intrusion detector
-        /// </summary>
-        [TestMethod]
-        public void Test_LoadCustom()
-        {
-            // Set new 
-            EsapiConfig.Instance.IntrusionDetector.Type = typeof(SurrogateIntrusionDetector).AssemblyQualifiedName;
+			Esapi.IntrusionDetector.AddEvent(evtName);
+		}
 
-            IIntrusionDetector detector = Esapi.IntrusionDetector;
-            Assert.IsTrue(detector.GetType().Equals(typeof(SurrogateIntrusionDetector)));
-        }
-    }
+		/// <summary>
+		///     Test loading of a custom intrusion detector
+		/// </summary>
+		[Test]
+		public void Test_LoadCustom()
+		{
+			// Set new 
+			EsapiConfig.Instance.IntrusionDetector.Type = typeof(SurrogateIntrusionDetector).AssemblyQualifiedName;
+
+			var detector = Esapi.IntrusionDetector;
+			Assert.IsTrue(detector.GetType().Equals(typeof(SurrogateIntrusionDetector)));
+		}
+	}
 }

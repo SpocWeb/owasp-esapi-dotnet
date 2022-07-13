@@ -2,24 +2,24 @@
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
-<html xmlns="http://www.w3.org/1999/xhtml" >
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
-    <link href="/style.css" rel="stylesheet" type="text/css" />
+    <link href="/style.css" rel="stylesheet" type="text/css"/>
     <title>ESAPI Swingset</title>
 </head>
 <body>
-    <div id="header">
-        .NET ESAPI SwingSet        
-    </div>
-    <div class="main">
-        <asp:SiteMapPath ID="smpSwingset" CssClass="breadcrumb" runat="server">
-    
-        </asp:SiteMapPath>
-        <form id="EsapiForm" runat="server">    
-            <asp:ContentPlaceHolder ID="SwingsetContentPlaceHolder" runat="server">
-        
-            </asp:ContentPlaceHolder>
-        </form>
-    </div>
+<div id="header">
+    .NET ESAPI SwingSet
+</div>
+<div class="main">
+    <asp:SiteMapPath ID="smpSwingset" CssClass="breadcrumb" runat="server">
+
+    </asp:SiteMapPath>
+    <form id="EsapiForm" runat="server">
+        <asp:ContentPlaceHolder ID="SwingsetContentPlaceHolder" runat="server">
+
+        </asp:ContentPlaceHolder>
+    </form>
+</div>
 </body>
 </html>

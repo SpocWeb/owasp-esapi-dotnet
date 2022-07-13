@@ -1,37 +1,18 @@
-﻿
-namespace Owasp.Esapi.Swingset
+﻿namespace Owasp.Esapi.Swingset
 {
-    public class Account
-    {
-        int id;
+	public class Account
+	{
+		public Account(int _id, string _name, double _amt)
+		{
+			Id = _id;
+			Name = _name;
+			Amt = _amt;
+		}
 
-        public int Id
-        {
-            get { return id; }
-            set { id = value; }
-        }
+		public int Id { get; set; }
 
-        string name;
+		public string Name { get; set; }
 
-        public string Name
-        {
-            get { return name; }
-            set { name = value; }
-        }
-
-        double amt;
-
-        public double Amt
-        {
-            get { return amt; }
-            set { amt = value; }
-        }
-
-        public Account(int _id, string _name, double _amt)
-        {
-            Id = _id;
-            Name = _name;
-            Amt = _amt;
-        }    
-    }
+		public double Amt { get; set; }
+	}
 }

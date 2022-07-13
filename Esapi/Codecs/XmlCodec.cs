@@ -2,9 +2,9 @@
 using Owasp.Esapi.Interfaces;
 
 namespace Owasp.Esapi.Codecs
-{   
+{
 	/// <summary>
-	/// This class performs XML encoding.
+	///     This class performs XML encoding.
 	/// </summary>
 	[Codec(BuiltinCodecs.Xml)]
 	public class XmlCodec : ICodec
@@ -12,7 +12,7 @@ namespace Owasp.Esapi.Codecs
 		#region ICodec Members
 
 		/// <summary>
-		/// XML encode the input.
+		///     XML encode the input.
 		/// </summary>
 		/// <param name="input">The input to encode.</param>
 		/// <returns>The encoded input.</returns>
@@ -22,7 +22,7 @@ namespace Owasp.Esapi.Codecs
 		}
 
 		/// <summary>
-		/// XML decode the input.
+		///     XML decode the input.
 		/// </summary>
 		/// <param name="input">The input to decode.</param>
 		/// <returns>The decoded input.</returns>
